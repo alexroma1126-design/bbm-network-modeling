@@ -1,0 +1,68 @@
+﻿# ============================================================
+# LaTeX build artifacts
+# ============================================================
+
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+*.xdv
+
+# Main generated PDF
+/main.pdf
+
+# Temporary / backup files
+*.bak
+*.tmp
+*.swp
+*.swo
+*~
+*.SAVE-ERROR
+
+# ============================================================
+# Python
+# ============================================================
+
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.pytest_cache/
+.mypy_cache/
+
+# ============================================================
+# C / C++
+# ============================================================
+
+/build/
+/data/generated/*
+!/data/generated/bbm_network_eda_v1.csv
+*.exe
+*.obj
+*.o
+*.out
+*.dll
+*.so
+*.a
+
+# ============================================================
+# IDE / OS
+# ============================================================
+
+.vscode/settings.json
+.DS_Store
+Thumbs.db
+desktop.ini
