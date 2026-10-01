@@ -652,3 +652,47 @@ En consecuencia, una observación no representa un nodo aislado ni un único ins
 Esto es importante para interpretar correctamente las variables del dataset.
 
 ---
+
+# Métrica de sincronización
+
+Para comparar el comportamiento de los nodos de una red se utiliza una métrica de error de sincronización.
+
+De forma conceptual, esta métrica mide qué tan diferentes son los estados de los nodos en un instante dado.
+
+Cuando el error es pequeño, los nodos se encuentran más cerca de un comportamiento similar.
+
+En cambio, un valor mayor indica mayor diferencia entre los estados de la red.
+
+---
+
+## Comparación respecto del escenario sin control
+
+Para cuantificar el efecto de una estrategia de actuación, se utiliza la diferencia
+
+$$
+\Delta E_{\text{sync}}
+=
+E_{\text{sync}}^{\text{controlado}}(T)
+-
+E_{\text{sync}}^{\text{sin control}}(T).
+$$
+
+Por tanto:
+
+- si $\Delta E_{\text{sync}}<0$, la estrategia controlada termina con un error de sincronización menor que el escenario sin control;
+- si $\Delta E_{\text{sync}}=0$, no hay diferencia final respecto del baseline;
+- si $\Delta E_{\text{sync}}>0$, el error final es mayor que en el escenario sin control.
+
+Esta convención es fundamental para interpretar las figuras, tablas y modelos predictivos del proyecto.
+
+---
+
+## Interpretación correcta de $\Delta E_{\text{sync}}$
+
+Un valor negativo no debe interpretarse como una demostración de controlabilidad.
+
+Significa únicamente que, para esa configuración experimental concreta, el error final de sincronización fue menor con la estrategia de actuación empleada.
+
+De forma análoga, un valor positivo no implica que el actuador sea inútil de forma general, sino que en esa simulación concreta el error final fue mayor que en el baseline.
+
+---
