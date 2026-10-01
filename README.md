@@ -983,7 +983,7 @@ como identificador de grupo.
 
 La división se realiza mediante `GroupShuffleSplit`, con un 20 % de los grupos reservados para prueba.
 
-el diseño utiliza:
+El diseño utiliza:
 
 - 240 grupos de entrenamiento;
 - 60 grupos de prueba;
@@ -1225,3 +1225,147 @@ $$
 Esta distinción evita presentar las métricas del modelo fuera del contexto experimental en el que fueron obtenidas.
 
 ---
+
+# Limitaciones del estudio
+
+Los resultados deben interpretarse dentro del diseño experimental utilizado. El proyecto trabaja con datos sintéticos generados bajo un conjunto finito de configuraciones y, por tanto, no pretende establecer conclusiones universales sobre cualquier red BBM.
+
+Las principales limitaciones son:
+
+- se estudian únicamente las topologías `path`, `cycle` y `star`;
+- el número de nodos se restringe a $n\in\{4,5,6,7,8\}$;
+- el acoplamiento se evalúa para $\gamma\in\{0,0.25,0.5,1\}$;
+- las simulaciones principales utilizan $K=4$, $T=1$ y $h=0.0025$;
+- se consideran cinco condiciones iniciales discretas;
+- `initial_condition_id` funciona como una etiqueta categórica y no como una descripción física continua del estado inicial;
+- $\Delta E_{\text{sync}}$ mide cambio en el error final de sincronización y no constituye una prueba de controlabilidad;
+- la importancia por permutación es una medida predictiva y no una medida causal.
+
+Estas limitaciones no disminuyen la utilidad del experimento. Delimitan con precisión el dominio en el que las conclusiones y métricas obtenidas son válidas.
+
+---
+
+# Reproducibilidad
+
+Este repositorio conserva el dataset base de $1200$ simulaciones y los scripts necesarios para reconstruir la etapa de modelado supervisado, ejecutar las validaciones y regenerar las figuras de Machine Learning.
+
+## Instalación
+
+Se recomienda utilizar un entorno virtual de Python.
+
+```bash
+python -m venv .venv
+```
+
+En Windows PowerShell:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+Las dependencias principales son NumPy, pandas, matplotlib, Pillow y scikit-learn.
+
+## Flujo reproducible
+
+Partiendo de
+
+```text
+data/generated/bbm_network_eda_v1.csv
+```
+
+el flujo de análisis puede ejecutarse en el siguiente orden:
+
+```powershell
+python code/eda/build_bbm_network_modeling_dataset.py
+python code/eda/model_bbm_network.py
+python code/eda/validate_bbm_network_models.py
+python code/eda/validate_bbm_network_models_repeated.py
+python code/eda/visualize_bbm_network_models.py
+```
+
+El primer script transforma las $1200$ simulaciones originales en el dataset supervisado de $900$ observaciones controladas emparejadas con sus respectivos baselines.
+
+Los scripts posteriores entrenan los modelos, verifican la separación de grupos experimentales, evalúan distintos regímenes de validación y generan las figuras de resultados.
+
+Los productos intermedios de modelado se generan dentro de `data/generated/`. El dataset fuente `bbm_network_eda_v1.csv` permanece versionado en Git, mientras que los archivos derivados pueden regenerarse mediante los scripts anteriores.
+
+---
+
+# Estructura del repositorio
+
+```text
+bbm-network-modeling/
+├── README.md
+├── requirements.txt
+├── code/
+│   └── eda/
+│       ├── build_bbm_network_modeling_dataset.py
+│       ├── model_bbm_network.py
+│       ├── validate_bbm_network_models.py
+│       ├── validate_bbm_network_models_repeated.py
+│       └── visualize_bbm_network_models.py
+├── data/
+│   └── generated/
+│       └── bbm_network_eda_v1.csv
+└── figures/
+    ├── mathematical_background/
+    │   └── bbm_solution_space_time.png
+    ├── network_trajectory/
+    │   ├── bbm_path_animation.gif
+    │   ├── bbm_topology_comparison.gif
+    │   └── bbm_actuator_comparison.gif
+    ├── eda/
+    │   ├── 01_delta_sync_vs_network_size.png
+    │   ├── 04_initial_condition_interaction.png
+    │   └── 05_topology_strategy_interaction.png
+    └── modeling/
+        ├── 01_model_performance.png
+        ├── 02_rf_predicted_vs_actual.png
+        ├── 03_rf_permutation_importance.png
+        └── 04_validation_regimes_v2.png
+```
+
+Esta organización separa datos, código y productos visuales para facilitar la inspección y reproducción del análisis.
+
+---
+
+# Conclusiones
+
+Este proyecto muestra cómo un sistema matemático puede convertirse en un problema completo de Ciencia de Datos.
+
+El punto de partida es una red de sistemas BBM acoplados mediante un grafo. A partir de un diseño factorial se generan $1200$ simulaciones, que posteriormente se organizan como un dataset estructurado y se estudian mediante análisis exploratorio y aprendizaje supervisado.
+
+Los resultados muestran que la respuesta medida mediante $\Delta E_{\text{sync}}$ depende de la combinación entre estrategia de actuación, condición inicial, tamaño de la red, acoplamiento y topología. Esta dependencia conjunta explica por qué un modelo no lineal como Random Forest obtiene un rendimiento considerablemente mejor que la regresión lineal dentro del régimen de interpolación estudiado.
+
+Sin embargo, la validación con condiciones iniciales no vistas muestra que un alto rendimiento dentro del diseño conocido no implica capacidad automática de extrapolación. Esta diferencia constituye uno de los resultados metodológicos más importantes del trabajo.
+
+En síntesis, el proyecto conecta
+
+$$
+\boxed{
+\text{EDP}
+\rightarrow
+\text{grafos}
+\rightarrow
+\text{simulación numérica}
+\rightarrow
+\text{dataset}
+\rightarrow
+\text{EDA}
+\rightarrow
+\text{Machine Learning}
+\rightarrow
+\text{validación}
+}
+$$
+
+y utiliza esa cadena para estudiar de forma reproducible cómo distintas configuraciones de una red BBM se relacionan con su comportamiento de sincronización.
+
+---
+
+## Alcance del repositorio
+
+Este repositorio está enfocado en el **análisis de datos, modelado y validación** del experimento BBM. El archivo `bbm_network_eda_v1.csv` constituye el punto de partida versionado para la etapa reproducible incluida aquí.
+
+La simulación matemática que originó ese dataset proporciona el contexto científico del proyecto, mientras que este repositorio concentra el flujo de Ciencia de Datos construido sobre las observaciones generadas.
