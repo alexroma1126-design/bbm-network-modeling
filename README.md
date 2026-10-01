@@ -945,3 +945,108 @@ Esta relación no se plantea como una ecuación analítica exacta, sino como la 
 El análisis exploratorio sugiere que pueden existir relaciones no lineales e interacciones entre variables. Por esta razón, en la siguiente etapa se compara un modelo lineal con un modelo Random Forest.
 
 ---
+
+# Modelado supervisado
+
+El objetivo de la etapa predictiva es estimar la variable
+
+$$
+\Delta E_{\text{sync}},
+$$
+
+a partir de características del diseño experimental.
+
+Las variables de entrada utilizadas son:
+
+```text
+graph_type
+initial_condition_id
+scenario
+n_nodes
+gamma
+```
+
+Esta selección evita utilizar como predictores variables calculadas después de la simulación que podrían contener información directa sobre el resultado final.
+
+---
+
+## Prevención de fuga de información
+Cada configuración base sin control genera tres escenarios controlados. Por tanto, esas tres observaciones no son independientes: comparten la misma topología, tamaño, condición inicial y acoplamiento.
+
+Para evitar que información de un mismo experimento base aparezca simultáneamente en entrenamiento y prueba, se utiliza la variable
+
+```text
+modeling_group_id
+```
+
+como identificador de grupo.
+
+La división se realiza mediante `GroupShuffleSplit`, con un 20 % de los grupos reservados para prueba.
+
+el diseño utiliza:
+
+- 240 grupos de entrenamiento;
+- 60 grupos de prueba;
+- 720 filas de entrenamiento;
+- 180 filas de prueba;
+- 0 grupos compartidos entre train y test.
+
+De forma matemática,
+
+$$
+G_{\text{train}}\cap G_{\text{test}}=\varnothing.
+$$
+
+Esta restricción es necesaria para que la evaluación mida generalización sobre configuraciones no vistas durante el entrenamiento.
+
+---
+
+## Modelos comparados
+
+### 1. Baseline de la media
+
+El primer modelo utiliza como predicción el promedio de $\Delta E_{\text{sync}}$ en el conjunto de entrenamiento.
+
+Este modelo no intenta aprender relaciones entre variables. Su función es servir como referencia mínima para los modelos más complejos.
+
+---
+
+### 2. Regresión lineal
+
+La regresión lineal se utiliza como un modelo interpretable para evaluar si una combinación lineal de los factores experimentales puede explicar parte de la variación de $\Delta E_{\text{sync}}$.
+
+Las variables categóricas se codifican mediante one-hot encoding y las variables numéricas se estandarizan.
+
+---
+
+### 3. Random Forest
+
+El Random Forest se utiliza para modelar relaciones no lineales e interacciones entre los factores experimentales.
+
+El flujo de preprocesamiento incluye one-hot encoding para las variables categóricas y paso directo de las variables numéricas.
+
+La selección de hiperparámetros se realiza con validación cruzada interna sobre los grupos de entrenamiento.
+
+Esta estructura permite comparar la capacidad de generalización de un modelo no lineal frente a la regresión lineal y el baseline.
+
+---
+
+## Métricas de evaluación
+
+Los modelos se comparan mediante tres métricas de regresión:
+
+$$
+MAE,
+\qquad
+RMSE,
+\quad
+R^2.
+$$
+
+El MAE mide el error absoluto promedio.
+
+El RMSE penaliza con mayor intensidad los errores grandes.
+
+Por último, $R^2$ mide qué proporción de la variabilidad de la variable objetivo puede explicar el modelo respecto a una predicción basada únicamente en el promedio.
+
+---
