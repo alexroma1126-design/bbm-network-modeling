@@ -820,3 +820,128 @@ $$
 Esta transformación permite pasar de la observación cualitativa de una trayectoria a un análisis reproducible sobre las $1200$ simulaciones.
 
 ---
+
+# Análisis exploratorio de datos
+
+Una vez construidas las $1200$ simulaciones, el siguiente objetivo es estudiar cómo cambia el comportamiento de la red al modificar los factores experimentales.
+
+El análisis exploratorio se centra especialmente en la variable
+
+$$
+\Delta E_{\text{sync}},
+$$
+
+porque permite comparar cada estrategia de actuación con su escenario de referencia sin control.
+
+En esta sección se utilizan visualizaciones que permiten estudiar tres preguntas:
+
+1. ¿Cómo cambia el efecto de la actuación con el tamaño de la red?
+2. ¿Hasta qué punto la condición inicial modifica la respuesta?
+3. ¿Existe interacción entre topología y estrategia de actuación?
+
+---
+
+## 1. Efecto del tamaño de la red
+
+<p align="center">
+  <img src="figures/eda/01_delta_sync_vs_network_size.png" alt="Delta de sincronización frente al tamaño de la red" width="850">
+</p>
+
+*Variación de $\Delta E_{\text{sync}}$ según el número de nodos y la estrategia de actuación.*
+
+En esta figura, el eje horizontal representa el tamaño de la red y el eje vertical representa
+
+$$
+\Delta E_{\text{sync}}.
+$$
+
+La línea de referencia
+
+$$
+\Delta E_{\text{sync}}=0
+$$
+
+separa dos comportamientos:
+
+- valores negativos indican un error final de sincronización menor que el baseline;
+- valores positivos indican un error final mayor que el escenario sin control.
+
+La figura permite observar que el efecto de una estrategia de actuación no es constante cuando cambia el número de nodos.
+
+Por tanto, el tamaño de la red no debe tratarse únicamente como una característica descriptiva: puede interactuar con la ubicación y el número de actuadores.
+
+Esta observación justifica incluir `n_nodes` como variable explicativa en la etapa de modelado supervisado.
+
+---
+
+## 2. Interacción con la condición inicial
+
+<p align="center">
+  <img src="figures/eda/04_initial_condition_interaction.png" alt="Interacción entre condición inicial y estrategia de actuación" width="850">
+</p>
+
+*Efecto de la estrategia de actuación bajo diferentes condiciones iniciales.*
+
+Esta visualización estudia una cuestión especialmente importante: una misma estrategia puede producir respuestas distintas cuando cambia el estado inicial de la red.
+
+Las cinco configuraciones iniciales no son simples etiquetas administrativas. Representan estados de partida diferentes para las simulaciones BBM.
+
+La figura muestra que el efecto de la actuación depende de esa configuración inicial y que, por tanto, no resulta adecuado interpretar una estrategia de manera aislada.
+
+Esto anticipa una dificultad que aparecerá posteriormente en la validación de los modelos: aprender patrones dentro de condiciones iniciales conocidas es más sencillo que extrapolar a una condición inicial completamente nueva.
+
+Por esta razón, `initial_condition_id` se conserva como una variable explícita durante el modelado.
+
+---
+
+## 3. Interacción entre topología y estrategia
+
+<p align="center">
+  <img src="figures/eda/05_topology_strategy_interaction.png" alt="Interacción entre topología y estrategia de actuación" width="850">
+</p>
+
+*Comparación de $\Delta E_{\text{sync}}$ para distintas combinaciones de topología y estrategia.*
+
+Esta figura permite estudiar conjuntamente dos factores:
+
+$$
+\text{topología}
+\qquad\text{y}\qquad
+\text{estrategia de actuación}.
+$$
+
+La pregunta ya no es solamente si una estrategia funciona mejor o peor en promedio, sino si su efecto cambia cuando cambia la estructura de conexiones de la red.
+
+Esto es importante porque path, cycle y star poseen matrices de adyacencia y Laplacianos diferentes.
+
+En consecuencia, una misma ubicación de actuadores puede interactuar de forma distinta con la estructura del grafo.
+
+La figura debe interpretarse como evidencia de interacción experimental y no como una clasificación universal de topologías o estrategias.
+
+---
+
+## Lectura conjunta del EDA
+
+Las tres visualizaciones conducen a una misma conclusión metodológica: la respuesta de la red BBM depende de combinaciones de factores y no únicamente de efectos individuales.
+
+De forma esquemática,
+
+$$
+\boxed{
+\Delta E_{\text{sync}}
+=
+f(
+\text{topología},
+\text{tamaño},
+\gamma,
+\text{condición inicial},
+\text{estrategia}
+)
+}
+$$
+
+Esta relación no se plantea como una ecuación analítica exacta, sino como la pregunta predictiva que se estudiará mediante modelos supervisados.
+
+El análisis exploratorio sugiere que pueden existir relaciones no lineales e interacciones entre variables. Por esta razón, en la siguiente etapa se compara un modelo lineal con un modelo Random Forest.
+
+---
