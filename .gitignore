@@ -66,3 +66,5 @@ venv/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+README_old.md
