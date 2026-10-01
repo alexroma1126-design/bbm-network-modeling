@@ -515,7 +515,7 @@ $$
 
 Cada configuración experimental produce una simulación completa.
 
-A `artir de esa simulación se extraen variables relacionadas con:
+A partir de esa simulación se extraen variables relacionadas con:
 
 - topología;
 - tamaño de red;
