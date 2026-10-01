@@ -149,7 +149,7 @@ Esta distinción será importante cuando utilicemos Fourier para representar num
 
 ## 2. Ecuación BBM en un nodo
 
-Una forma esquenática de la dinámica utilizada para el nodo $i$ es
+Una forma esquemática de la dinámica utilizada para el nodo $i$ es
 
 $$
 (1-\partial_{xx})u_{i,t}
