@@ -145,6 +145,15 @@ sí puede interpretarse como una señal escalar que cambia con el tiempo.
 
 Esta distinción será importante cuando utilicemos Fourier para representar numéricamente cada estado BBM.
 
+La siguiente figura ilustra cómo una solución $u(x,t)$ puede interpretarse simultáneamente como una superficie espacio--tiempo y como una familia de perfiles espaciales obtenidos al fijar distintos instantes.
+
+<p align="center">
+  <img src="figures/mathematical_background/bbm_solution_space_time.png" alt="Interpretación espacio-temporal de una solución BBM" width="850">
+</p>
+
+*Figura de contexto matemático: representación espacio--temporal de una solución BBM.*
+
+
 ---
 
 ## 2. Ecuación BBM en un nodo
