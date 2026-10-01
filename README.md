@@ -1050,3 +1050,178 @@ El RMSE penaliza con mayor intensidad los errores grandes.
 Por último, $R^2$ mide qué proporción de la variabilidad de la variable objetivo puede explicar el modelo respecto a una predicción basada únicamente en el promedio.
 
 ---
+
+# Resultados del modelado
+
+La comparación entre modelos se realiza sobre particiones agrupadas que mantienen separados los grupos experimentales entre entrenamiento y prueba.
+
+Para reducir la dependencia de una única partición, se utilizan diez holdouts agrupados con semillas distintas.
+
+Los resultados promedio son:
+
+| Modelo | MAE | RMSE | $R^2$ |
+|---|---:|---:|---:|
+| Baseline de la media | 0.03301 | 0.04365 | -0.0107 |
+| Regresión lineal | 0.02745 | 0.03802 | 0.2287 |
+| Random Forest | 0.00695 | 0.01009 | 0.9450 |
+
+En este protocolo de evaluación, Random Forest presenta los menores errores y el mayor $R^2$ de los tres modelos comparados.
+
+La diferencia con la regresión lineal sugiere que la relación entre los factores experimentales y $\Delta E_{\text{sync}}$ contiene componentes no lineales e interacciones que un modelo puramente lineal no captura completamente.
+
+---
+
+## 1. Rendimiento comparado
+
+<p align="center">
+  <img src="figures/modeling/01_model_performance.png" alt="Comparación de rendimiento entre modelos" width="850">
+</p>
+
+*RMSE promedio bajo holdout agrupado repetido y libre de fuga entre grupos experimentales.*
+
+La figura resume el error de predicción de los tres modelos.
+
+El baseline de la media proporciona una referencia mínima: si un modelo supervisado no mejora esta predicción, su utilidad sería limitada.
+
+La regresión lineal reduce el error respecto al baseline, lo que indica que existe una señal predictiva asociada a los factores experimentales.
+
+Random Forest reduce el RMSE de forma mucho más marcada. En las diez particiones agrupadas evaluadas obtuvo un RMSE menor que la regresión lineal y que el baseline.
+
+Para Random Forest, los resultados repetidos presentan aproximadamente
+
+$$
+R^2 = 0.9450 \pm 0.0106
+$$
+
+y
+
+$$
+\mathrm{RMSE}=0.01009 \pm 0.00082.
+$$
+
+Estas cifras describen el rendimiento dentro del régimen de interpolación evaluado: los grupos de prueba son nuevos, pero los niveles de los factores experimentales siguen perteneciendo al diseño observado.
+
+---
+
+## 2. Valores observados frente a predichos
+
+<p align="center">
+  <img src="figures/modeling/02_rf_predicted_vs_actual.png" alt="Valores observados y predichos por Random Forest" width="780">
+</p>
+
+*Predicciones de Random Forest frente a los valores observados de $\Delta E_{\text{sync}}$ en grupos experimentales reservados.*
+
+Cada punto representa una observación del conjunto de prueba.
+
+El eje horizontal contiene el valor observado y el eje vertical la predicción del modelo.
+
+La recta diagonal
+
+$$
+\widehat{\Delta E_{\text{sync}}}
+=
+\Delta E_{\text{sync}}
+$$
+
+representa predicción perfecta.
+
+Cuanto más cerca se encuentra un punto de esta diagonal, menor es el error de predicción correspondiente.
+
+La concentración de puntos alrededor de la diagonal es consistente con el alto $R^2$ observado en la evaluación agrupada.
+
+Sin embargo, esta figura debe interpretarse junto con las pruebas de generalización que aparecen más adelante: un buen ajuste sobre combinaciones conocidas del diseño experimental no garantiza extrapolación a estados iniciales completamente nuevos.
+
+---
+
+## 3. Importancia por permutación
+
+<p align="center">
+  <img src="figures/modeling/03_rf_permutation_importance.png" alt="Importancia por permutación de las variables del Random Forest" width="850">
+</p>
+
+*Incremento del MAE al permutar cada variable en los grupos de prueba.*
+
+La importancia por permutación mide cuánto empeora la predicción cuando se destruye la información de una variable manteniendo las demás sin modificar.
+
+En los experimentos, la importancia predictiva observada sigue aproximadamente el orden:
+
+1. estrategia del actuador;
+2. condición inicial;
+3. tamaño de la red;
+4. acoplamiento $\gamma$;
+5. topología.
+
+Esta jerarquía es predictiva y no causal.
+
+Una variable con alta importancia por permutación ayuda al modelo a predecir $\Delta E_{\text{sync}}$, pero esto no demuestra por sí mismo una relación causal ni una prioridad física universal.
+
+---
+
+# Generalización del modelo
+
+Un modelo puede obtener buen rendimiento cuando entrenamiento y prueba contienen niveles conocidos de las variables y, aun así, fallar cuando debe extrapolar hacia una configuración cualitativamente nueva.
+
+Para estudiar esta diferencia se comparan dos regímenes:
+
+- **interpolación:** los grupos de prueba son nuevos, pero pertenecen al mismo espacio factorial observado;
+- **extrapolación:** se deja fuera completamente una condición inicial durante el entrenamiento y se evalúa el modelo sobre ella.
+
+---
+
+## 4. Interpolación frente a extrapolación
+
+<p align="center">
+  <img src="figures/modeling/04_validation_regimes_v2.png" alt="Comparación entre interpolación y extrapolación del modelo" width="850">
+</p>
+
+*Comparación del rendimiento de Random Forest bajo distintos regímenes de validación.*
+
+La validación dejando una condición inicial fuera produce valores de $R^2$ aproximadamente iguales a
+
+| Condición inicial excluida | $R^2$ |
+|---:|---:|
+| 0 | 0.294 |
+| 1 | -0.060 |
+| 2 | -2.963 |
+| 3 | 0.109 |
+| 4 | 0.409 |
+
+El contraste con el $R^2$ cercano a $0.945$ del holdout agrupado muestra que interpolar dentro del diseño observado es considerablemente más sencillo que extrapolar a una condición inicial no vista.
+
+Este resultado también revela una limitación de la representación actual.
+
+La variable
+
+```text
+initial_condition_id
+```
+
+es una etiqueta categórica. Identifica cada condición inicial, pero no describe directamente sus propiedades físicas o espectrales.
+
+Cuando aparece una condición inicial completamente nueva, el modelo no dispone de una representación continua que le permita relacionarla de manera natural con las condiciones conocidas.
+
+---
+
+## Interpretación metodológica
+
+La caída de rendimiento fuera de las condiciones iniciales observadas no invalida el modelo.
+
+Indica con precisión cuál es su dominio actual de generalización.
+
+Dentro del diseño factorial conocido, Random Forest modela con alta precisión la respuesta de $\Delta E_{\text{sync}}$.
+
+Fuera de ese dominio, especialmente ante condiciones iniciales nuevas, sería necesario construir características más informativas, por ejemplo descriptores derivados del contenido espectral, energía inicial o estructura de los coeficientes de Fourier.
+
+Por tanto, una conclusión central del proyecto es distinguir entre
+
+$$
+\boxed{
+\text{buen rendimiento de interpolación}
+\neq
+\text{capacidad automática de extrapolación}
+}
+$$
+
+Esta distinción evita presentar las métricas del modelo fuera del contexto experimental en el que fueron obtenidas.
+
+---
