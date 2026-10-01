@@ -1,6 +1,6 @@
 # Análisis de redes BBM mediante Ciencia de Datos
 
-**Proyecto académico — Análisis de Bases de Datos**  
+**Proyecto académico — Análisis de Bases de Datos**
 **Maestría en Ciencia de Datos — Universidad Yachay Tech**
 
 **Autor:** Héctor Alexander Román Potosí
@@ -528,5 +528,127 @@ A `artir de esa simulación se extraen variables relacionadas con:
 - diferencias respecto del escenario no controlado.
 
 Por tanto, el modelo matemático funciona como mecanismo generador de datos sintéticos que luego se analizan desde Ciencia de Datos.
+
+---
+
+# Diseño experimental
+
+El dataset principal se construye a partir de un diseño factorial que combina varios factores experimentales.
+
+La combinación es
+
+$$
+3\times5\times4\times5\times4
+=
+1200.
+$$
+
+Por tanto, se generan
+
+$$
+\boxed{1200\text{ simulaciones}}.
+$$
+
+Cada simulación corresponde a una configuración única de los siguientes factores:
+
+| Factor | Valores |
+|---|---|
+| Topología | path, cycle, star |
+| Número de nodos | 4, 5, 6, 7, 8 |
+| Acoplamiento $\gamma$ | 0, 0.25, 0.5, 1 |
+| Condición inicial | 5 configuraciones |
+| Escenario de actuación | 4 estrategias |
+
+---
+
+## Topologías
+
+Se estudian tres familias de grafos:
+
+- **Path:** los nodos se conectan formando una cadena.
+- **Cycle:** los nodos forman un ciclo cerrado.
+- **Star:** un nodo central o hub se conecta con todos los demás.
+
+Estas topologías permiten evaluar cómo la estructura de la red modifica la dinámica de los sistemas BBM.
+
+---
+
+## Tamaño de red
+
+Se consideran redes con
+
+$$
+n=4,5,6,7,8.
+$$
+
+Esto permite estudiar si el efecto de los actuadores y el acoplamiento dependen del tamaño de la red.
+
+---
+
+## Acoplamiento de la red
+
+El parámetro
+
+$$
+\gamma
+$$
+
+controla la intensidad de interacción entre nodos conectados.
+
+En el experimento se utilizan los valores
+
+$$
+\gamma \in \{0,\;0.25,\;0.5,\;1\}.
+$$
+
+Cuando
+
+$$
+\gamma=0,
+$$
+
+el acoplamiento del grafo no influye en la dinámica.
+
+Al aumentar $\gamma$, la interacción entre los nodos se hace más intensa.
+
+---
+
+## Condiciones iniciales
+
+Cada experimento se ejecuta bajo una de cinco configuraciones iniciales.
+
+La condición inicial es importante porque determina el estado de partida de cada red BBM.
+
+El análisis exploratorio mostrará posteriormente que la respuesta a un mismo actuador puede cambiar según la condición inicial.
+
+---
+
+## Escenarios de actuación
+
+Se consideran cuatro escenarios:
+
+```text
+uncontrolled
+single_0
+single_middle
+two_0_last
+```
+
+Su interpretación es:
+
+- `uncontrolled`: no se aplica actuador;
+- `single_0`: se actúa sobre el nodo 0;
+- `single_middle`: se actúa sobre un nodo central;
+- `two_0_last`: se utilizan dos actuadores, en los extremos de la red.
+
+---
+
+## Una fila del dataset
+
+Cada fila del dataset representa una simulación completa.
+
+En consecuencia, una observación no representa un nodo aislado ni un único instante de tiempo, sino el resumen de un experimento completo.
+
+Esto es importante para interpretar correctamente las variables del dataset.
 
 ---
