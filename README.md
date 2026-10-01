@@ -1,4 +1,4 @@
-# Análisis de redes BBM mediante Ciencia de Datos
+﻿# Análisis de redes BBM mediante Ciencia de Datos
 
 **Proyecto académico — Análisis de Bases de Datos**
 **Maestría en Ciencia de Datos — Universidad Yachay Tech**
@@ -15,9 +15,9 @@ La idea principal es utilizar un modelo matemático como generador de datos sint
 
 A partir de estas simulaciones se construyó un dataset estructurado de:
 
-$$
+```math
 \boxed{1200\text{ experimentos}}
-$$
+```
 
 que posteriormente se utiliza para:
 
@@ -31,7 +31,7 @@ que posteriormente se utiliza para:
 
 La cadena conceptual del proyecto es:
 
-$$
+```math
 \boxed{
 \text{modelo BBM}
 \rightarrow
@@ -45,7 +45,7 @@ $$
 \rightarrow
 \text{Machine Learning}
 }
-$$
+```
 
 Los datos utilizados son sintéticos y se generan completamente mediante simulación numérica.
 
@@ -69,15 +69,15 @@ La parte de Ciencia de Datos comienza cuando esas simulaciones se organizan como
 
 En lugar de observar solamente una trayectoria:
 
-$$
+```math
 u(x,t)
-$$
+```
 
 se analizan cientos de configuraciones con diferentes características experimentales.
 
 El flujo general es:
 
-$$
+```math
 \text{modelo matemático}
 \rightarrow
 \text{diseño experimental}
@@ -89,7 +89,7 @@ $$
 \text{análisis}
 \rightarrow
 \text{predicción}
-$$
+```
 
 Cada fila del dataset representa una simulación completa.
 
@@ -115,9 +115,9 @@ Cada nodo de la red representa un sistema Benjamin–Bona–Mahony (BBM).
 
 Su estado se escribe como
 
-$$
+```math
 u_i(x,t),
-$$
+```
 
 donde:
 
@@ -127,9 +127,9 @@ donde:
 
 Para un instante fijo $t=t_0$,
 
-$$
+```math
 u_i(x,t_0)
-$$
+```
 
 representa un perfil espacial completo.
 
@@ -137,9 +137,9 @@ Por tanto, el estado de un nodo no es simplemente un número. Es una función es
 
 Si además fijamos una posición $x=x_0$, entonces
 
-$$
+```math
 u_i(x_0,t)
-$$
+```
 
 sí puede interpretarse como una señal escalar que cambia con el tiempo.
 
@@ -160,7 +160,7 @@ La siguiente figura ilustra cómo una solución $u(x,t)$ puede interpretarse sim
 
 Una forma esquemática de la dinámica utilizada para el nodo $i$ es
 
-$$
+```math
 (1-\partial_{xx})u_{i,t}
 +
 u_{i,x}
@@ -171,7 +171,7 @@ u_i u_{i,x}
 \sum_j w_{ij}(u_j-u_i)
 +
 \mathrm{control}_i.
-$$
+```
 
 En esta expresión:
 
@@ -185,7 +185,7 @@ En esta expresión:
 
 La ecuación combina tres elementos:
 
-$$
+```math
 \boxed{
 \text{dinámica BBM}
 +
@@ -193,7 +193,7 @@ $$
 +
 \text{control}
 }
-$$
+```
 
 ---
 
@@ -201,13 +201,13 @@ $$
 
 En lugar de estudiar una única función
 
-$$
+```math
 u(x,t),
-$$
+```
 
 se consideran varios sistemas:
 
-$$
+```math
 u_0(x,t),
 \quad
 u_1(x,t),
@@ -215,7 +215,7 @@ u_1(x,t),
 \dots,
 \quad
 u_{n-1}(x,t).
-$$
+```
 
 Cada función corresponde a un nodo del grafo.
 
@@ -255,26 +255,26 @@ Para el grafo
 
 se tiene
 
-$$
+```math
 A=
 \begin{pmatrix}
 0 & 1 & 0\\
 1 & 0 & 1\\
 0 & 1 & 0
 \end{pmatrix}.
-$$
+```
 
 El elemento $a_{ij}$ indica si dos nodos están conectados.
 
 En un grafo no dirigido y sin pesos,
 
-$$
+```math
 a_{ij}=
 \begin{cases}
 1, & \text{si } i \text{ y } j \text{ están conectados},\\
 0, & \text{en otro caso.}
 \end{cases}
-$$
+```
 
 ---
 
@@ -285,30 +285,30 @@ El grado de un nodo es el número de conexiones que posee.
 Para el mismo grafo,
 
 
-$$
+```math
 d_0=1,
 \quad
 d_1=2,
 \quad
 d_2=1.
-$$
+```
 
 La matriz de grados es diagonal:
 
-$$
+```math
 D=
 \begin{pmatrix}
 1 & 0 & 0\\
 0 & 2 & 0\\
 0 & 0 & 1
 \end{pmatrix}.
-$$
+```
 
 En general,
 
-$$
+```math
 d_i=\sum_j a_{ij}.
-$$
+```
 
 Por tanto, la diagonal de $D$ contiene exactamente el número de vecinos de cada nodo.
 
@@ -318,20 +318,20 @@ Por tanto, la diagonal de $D$ contiene exactamente el número de vecinos de cada
 
 El Laplaciano se define como
 
-$$
+```math
 \boxed{L=D-A}.
-$$
+```
 
 Para el ejemplo anterior,
 
-$$
+```math
 L=
 \begin{pmatrix}
 1 & -1 & 0\\
 -1 & 2 & -1\\
 0 & -1 & 1
 \end{pmatrix}.
-$$
+```
 
 La diagonal de $L$ contiene los grados de los nodos.
 
@@ -344,9 +344,9 @@ Cada fila del Laplaciano suma cero.
 
 Por tanto,
 
-$$
+```math
 L\mathbf{1}=0.
-$$
+```
 
 Si todos los nodos tienen el mismo estado, el Laplaciano no detecta diferencias entre ellos.
 
@@ -356,45 +356,45 @@ Si todos los nodos tienen el mismo estado, el Laplaciano no detecta diferencias 
 
 Sea
 
-$$
+```math
 U=
 \begin{pmatrix}
 u_0\\
 u_1\\
 u_2
 \end{pmatrix}.
-$$
+```
 
 Entonces,
 
-$$
+```math
 LU=
 \begin{pmatrix}
 u_0-u_1\\
 -u_0+2u_1-u_2\\
 u_2-u_1
 \end{pmatrix}.
-$$
+```
 
 El Laplaciano compara el estado de cada nodo con los estados de sus vecinos.
 
 Como el acoplamiento utiliza la forma
 
-$$
+```math
 \sum_j w_{ij}(u_j-u_i),
-$$
+```
 
 este término equivale, con la convención utilizada, a
 
-$$
+```math
 -(LU)_i.
-$$
+```
 
 Por tanto, el acoplamiento global puede escribirse como
 
-$$
+```math
 \boxed{-\gamma LU}.
-$$
+```
 
 Esta expresión resume en una única operación matricial todas las diferencias entre nodos conectados.
 
@@ -404,33 +404,33 @@ Esta expresión resume en una única operación matricial todas las diferencias 
 
 Los autovalores y autovectores del Laplaciano satisfacen
 
-$$
+```math
 Lv=\lambda v.
-$$
+```
 
 Los autovectores pueden interpretarse como patrones de variación sobre la red, mientras que los autovalores indican qué tan intensamente el Laplaciano detecta esos patrones.
 
 El autovalor
 
-$$
+```math
 \lambda_1=0
-$$
+```
 
 está asociado al modo constante, es decir, al caso en que todos los nodos tienen el mismo estado.
 
 El segundo autovalor,
 
-$$
+```math
 \lambda_2,
-$$
+```
 
 se conoce como conectividad algebraica.
 
 Para un grafo conectado,
 
-$$
+```math
 \lambda_2>0.
-$$
+```
 
 Esta cantidad contiene información sobre la conectividad global de la red.
 
@@ -440,30 +440,30 @@ Esta cantidad contiene información sobre la conectividad global de la red.
 
 Cada estado BBM se aproxima mediante una expansión de Fourier:
 
-$$
+```math
 u_i^K(x,t)
 =
 \sum_{k=-K}^{K}
 a_{i,k}(t)e^{ikx}.
-$$
+```
 
 La función espacial $u_i(x,t)$ queda representada por un conjunto finito de coeficientes
 
-$$
+```math
 a_{i,k}(t).
-$$
+```
 
 Con esta aproximación, el problema continuo se transforma en un sistema finito de ecuaciones diferenciales ordinarias para los coeficientes de Fourier.
 
 En los experimentos principales se utiliza:
 
-$$
+```math
 K=4,
 \quad
 T=1,
 \quad
 h=0.0025.
-$$
+```
 
 
 ---
@@ -474,7 +474,7 @@ La evolución temporal de los coeficientes de Fourier se calcula mediante Runge�
 
 El flujo numérico puede resumirse como
 
-$$
+```math
 u_i(x,0)
 \rightarrow
 a_{i,k}(0)
@@ -484,7 +484,7 @@ a_{i,k}(0)
 a_{i,k}(t)
 \rightarrow
 u_i(x,t).
-$$
+```
 
 Cada paso temporal produce un nuevo estado de la red y permite reconstruir las trayectorias de los sistemas BBM.
 
@@ -495,7 +495,7 @@ Cada paso temporal produce un nuevo estado de la red y permite reconstruir las t
 
 La cadena completa de generación de datos es
 
-$$
+```math
 \boxed{
 \text{ecuaciones BBM}
 \rightarrow
@@ -511,7 +511,7 @@ $$
 \rightarrow
 \text{dataset}
 }
-$$
+```
 
 Cada configuración experimental produce una simulación completa.
 
@@ -537,17 +537,17 @@ El dataset principal se construye a partir de un diseño factorial que combina v
 
 La combinación es
 
-$$
+```math
 3\times5\times4\times5\times4
 =
 1200.
-$$
+```
 
 Por tanto, se generan
 
-$$
+```math
 \boxed{1200\text{ simulaciones}}.
-$$
+```
 
 Cada simulación corresponde a una configuración única de los siguientes factores:
 
@@ -577,9 +577,9 @@ Estas topologías permiten evaluar cómo la estructura de la red modifica la din
 
 Se consideran redes con
 
-$$
+```math
 n=4,5,6,7,8.
-$$
+```
 
 Esto permite estudiar si el efecto de los actuadores y el acoplamiento dependen del tamaño de la red.
 
@@ -589,23 +589,23 @@ Esto permite estudiar si el efecto de los actuadores y el acoplamiento dependen 
 
 El parámetro
 
-$$
+```math
 \gamma
-$$
+```
 
 controla la intensidad de interacción entre nodos conectados.
 
 En el experimento se utilizan los valores
 
-$$
+```math
 \gamma \in \{0,\;0.25,\;0.5,\;1\}.
-$$
+```
 
 Cuando
 
-$$
+```math
 \gamma=0,
-$$
+```
 
 el acoplamiento del grafo no influye en la dinámica.
 
@@ -669,13 +669,13 @@ En cambio, un valor mayor indica mayor diferencia entre los estados de la red.
 
 Para cuantificar el efecto de una estrategia de actuación, se utiliza la diferencia
 
-$$
+```math
 \Delta E_{\text{sync}}
 =
 E_{\text{sync}}^{\text{controlado}}(T)
 -
 E_{\text{sync}}^{\text{sin control}}(T).
-$$
+```
 
 Por tanto:
 
@@ -717,9 +717,9 @@ Esta animación muestra la evolución temporal de los perfiles espaciales asocia
 
 Para cada instante $t$, cada curva representa un estado
 
-$$
+```math
 u_i(x,t).
-$$
+```
 
 Al avanzar el tiempo pueden observarse:
 
@@ -754,9 +754,9 @@ La condición inicial, el horizonte temporal y los demás parámetros del experi
 
 La topología modifica la matriz de adyacencia $A$, la matriz de grados $D$ y, en consecuencia, el Laplaciano
 
-$$
+```math
 L=D-A.
-$$
+```
 
 Por ello, aunque los nodos individuales sigan la misma dinámica BBM, el patrón de interacción entre ellos cambia.
 
@@ -807,7 +807,7 @@ Por ello, cada simulación se resume mediante variables numéricas como el error
 
 El flujo conceptual es
 
-$$
+```math
 \boxed{
 \text{trayectoria dinámica}
 \rightarrow
@@ -815,7 +815,7 @@ $$
 \rightarrow
 \text{fila del dataset}
 }
-$$
+```
 
 Esta transformación permite pasar de la observación cualitativa de una trayectoria a un análisis reproducible sobre las $1200$ simulaciones.
 
@@ -827,9 +827,9 @@ Una vez construidas las $1200$ simulaciones, el siguiente objetivo es estudiar c
 
 El análisis exploratorio se centra especialmente en la variable
 
-$$
+```math
 \Delta E_{\text{sync}},
-$$
+```
 
 porque permite comparar cada estrategia de actuación con su escenario de referencia sin control.
 
@@ -851,15 +851,15 @@ En esta sección se utilizan visualizaciones que permiten estudiar tres pregunta
 
 En esta figura, el eje horizontal representa el tamaño de la red y el eje vertical representa
 
-$$
+```math
 \Delta E_{\text{sync}}.
-$$
+```
 
 La línea de referencia
 
-$$
+```math
 \Delta E_{\text{sync}}=0
-$$
+```
 
 separa dos comportamientos:
 
@@ -904,11 +904,11 @@ Por esta razón, `initial_condition_id` se conserva como una variable explícita
 
 Esta figura permite estudiar conjuntamente dos factores:
 
-$$
+```math
 \text{topología}
 \qquad\text{y}\qquad
 \text{estrategia de actuación}.
-$$
+```
 
 La pregunta ya no es solamente si una estrategia funciona mejor o peor en promedio, sino si su efecto cambia cuando cambia la estructura de conexiones de la red.
 
@@ -926,7 +926,7 @@ Las tres visualizaciones conducen a una misma conclusión metodológica: la resp
 
 De forma esquemática,
 
-$$
+```math
 \boxed{
 \Delta E_{\text{sync}}
 =
@@ -938,7 +938,7 @@ f(
 \text{estrategia}
 )
 }
-$$
+```
 
 Esta relación no se plantea como una ecuación analítica exacta, sino como la pregunta predictiva que se estudiará mediante modelos supervisados.
 
@@ -950,9 +950,9 @@ El análisis exploratorio sugiere que pueden existir relaciones no lineales e in
 
 El objetivo de la etapa predictiva es estimar la variable
 
-$$
+```math
 \Delta E_{\text{sync}},
-$$
+```
 
 a partir de características del diseño experimental.
 
@@ -993,9 +993,9 @@ El diseño utiliza:
 
 De forma matemática,
 
-$$
+```math
 G_{\text{train}}\cap G_{\text{test}}=\varnothing.
-$$
+```
 
 Esta restricción es necesaria para que la evaluación mida generalización sobre configuraciones no vistas durante el entrenamiento.
 
@@ -1035,13 +1035,13 @@ Esta estructura permite comparar la capacidad de generalización de un modelo no
 
 Los modelos se comparan mediante tres métricas de regresión:
 
-$$
+```math
 MAE,
 \qquad
 RMSE,
 \quad
 R^2.
-$$
+```
 
 El MAE mide el error absoluto promedio.
 
@@ -1089,15 +1089,15 @@ Random Forest reduce el RMSE de forma mucho más marcada. En las diez particione
 
 Para Random Forest, los resultados repetidos presentan aproximadamente
 
-$$
+```math
 R^2 = 0.9450 \pm 0.0106
-$$
+```
 
 y
 
-$$
+```math
 \mathrm{RMSE}=0.01009 \pm 0.00082.
-$$
+```
 
 Estas cifras describen el rendimiento dentro del régimen de interpolación evaluado: los grupos de prueba son nuevos, pero los niveles de los factores experimentales siguen perteneciendo al diseño observado.
 
@@ -1117,11 +1117,11 @@ El eje horizontal contiene el valor observado y el eje vertical la predicción d
 
 La recta diagonal
 
-$$
+```math
 \widehat{\Delta E_{\text{sync}}}
 =
 \Delta E_{\text{sync}}
-$$
+```
 
 representa predicción perfecta.
 
@@ -1214,13 +1214,13 @@ Fuera de ese dominio, especialmente ante condiciones iniciales nuevas, sería ne
 
 Por tanto, una conclusión central del proyecto es distinguir entre
 
-$$
+```math
 \boxed{
 \text{buen rendimiento de interpolación}
 \neq
 \text{capacidad automática de extrapolación}
 }
-$$
+```
 
 Esta distinción evita presentar las métricas del modelo fuera del contexto experimental en el que fueron obtenidas.
 
@@ -1342,7 +1342,7 @@ Sin embargo, la validación con condiciones iniciales no vistas muestra que un a
 
 En síntesis, el proyecto conecta
 
-$$
+```math
 \boxed{
 \text{EDP}
 \rightarrow
@@ -1358,7 +1358,7 @@ $$
 \rightarrow
 \text{validación}
 }
-$$
+```
 
 y utiliza esa cadena para estudiar de forma reproducible cómo distintas configuraciones de una red BBM se relacionan con su comportamiento de sincronización.
 
