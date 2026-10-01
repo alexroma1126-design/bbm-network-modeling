@@ -696,3 +696,127 @@ Significa únicamente que, para esa configuración experimental concreta, el err
 De forma análoga, un valor positivo no implica que el actuador sea inútil de forma general, sino que en esa simulación concreta el error final fue mayor que en el baseline.
 
 ---
+
+# Visualización dinámica de las simulaciones
+
+Las trayectorias completas contienen mucha más información que una única métrica final. Por esta razón, además del dataset tabular, el proyecto incluye animaciones construidas a partir de los estados simulados de la red.
+
+Estas visualizaciones no sustituyen al análisis cuantitativo. Su función es complementar las métricas y permitir observar cómo evoluciona espacial y temporalmente cada sistema BBM.
+
+---
+
+## 1. Evolución de una red tipo path
+
+<p align="center">
+  <img src="figures/network_trajectory/bbm_path_animation.gif" alt="Evolución temporal de una red BBM tipo path" width="850">
+</p>
+
+*Animación de una red BBM tipo path reconstruida a partir de los estados obtenidos durante la simulación.*
+
+Esta animación muestra la evolución temporal de los perfiles espaciales asociados a los nodos de una red tipo path.
+
+Para cada instante $t$, cada curva representa un estado
+
+$$
+u_i(x,t).
+$$
+
+Al avanzar el tiempo pueden observarse:
+
+- cambios en la forma de los perfiles;
+- propagación de diferencias entre nodos conectados;
+- aproximación o separación entre las trayectorias;
+- efecto acumulado del acoplamiento de la red.
+
+La animación se obtiene a partir de los estados numéricos generados durante la integración temporal y de la reconstrucción de Fourier. Por tanto, los cuadros representan estados calculados por la simulación y no una interpolación visual artificial.
+
+Esta figura permite conectar directamente la ecuación BBM con los datos que posteriormente se resumen en el dataset.
+
+---
+
+## 2. Comparación entre topologías
+
+<p align="center">
+  <img src="figures/network_trajectory/bbm_topology_comparison.gif" alt="Comparación dinámica entre topologías BBM" width="850">
+</p>
+
+*Comparación dinámica entre redes path, cycle y star bajo una configuración experimental común.*
+
+Aquí se comparan las tres topologías principales del estudio:
+
+```text
+path
+cycle
+star
+```
+
+La condición inicial, el horizonte temporal y los demás parámetros del experimento se mantienen comparables para aislar visualmente el efecto de la estructura de la red.
+
+La topología modifica la matriz de adyacencia $A$, la matriz de grados $D$ y, en consecuencia, el Laplaciano
+
+$$
+L=D-A.
+$$
+
+Por ello, aunque los nodos individuales sigan la misma dinámica BBM, el patrón de interacción entre ellos cambia.
+
+La animación sirve como evidencia visual de que la estructura del grafo puede modificar la evolución colectiva. Sin embargo, no debe interpretarse como una demostración de que una topología sea universalmente superior a otra: la respuesta también depende del tamaño de la red, del acoplamiento y de las condiciones iniciales.
+
+---
+
+## 3. Comparación de estrategias de actuación
+
+<p align="center">
+  <img src="figures/network_trajectory/bbm_actuator_comparison.gif" alt="Comparación de estrategias de actuación en una red BBM" width="850">
+</p>
+
+*Comparación de la dinámica de una misma red bajo distintas ubicaciones de actuadores.*
+
+Esta animación compara escenarios de actuación manteniendo fija la estructura principal del experimento.
+
+El objetivo visual es responder una pregunta sencilla:
+
+> ¿Cambiar la ubicación del actuador modifica la respuesta de la red?
+
+La comparación permite observar que dos estrategias con un esfuerzo de control comparable pueden producir trayectorias diferentes.
+
+Esto motiva una de las variables centrales del dataset:
+
+```text
+scenario
+```
+
+y justifica estudiar de manera sistemática las estrategias
+
+```text
+uncontrolled
+single_0
+single_middle
+two_0_last
+```
+
+La animación no demuestra por sí sola cuál estrategia es óptima. Su función es mostrar por qué la ubicación de los actuadores constituye un factor experimental relevante que posteriormente se analiza con estadística descriptiva y modelos supervisados.
+
+---
+
+## De las animaciones a las variables
+
+Las animaciones muestran trayectorias completas, mientras que el dataset necesita representaciones tabulares que puedan compararse entre cientos de experimentos.
+
+Por ello, cada simulación se resume mediante variables numéricas como el error de sincronización final, diferencias respecto del escenario sin control, esfuerzo de actuación y otras características derivadas.
+
+El flujo conceptual es
+
+$$
+\boxed{
+\text{trayectoria dinámica}
+\rightarrow
+\text{métricas}
+\rightarrow
+\text{fila del dataset}
+}
+$$
+
+Esta transformación permite pasar de la observación cualitativa de una trayectoria a un análisis reproducible sobre las $1200$ simulaciones.
+
+---
